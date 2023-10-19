@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.board.model.dao.BoardDao">
+	<resultMap type="Board" id="boardMap">
+		<result column="id" property="id"/>
+		<result column="writer" property="writer"/>
+		<result column="title" property="title"/>
+		<result column="content" property="content"/>
+		<result column="view_cnt" property="viewCnt"/>
+		<result column="reg_date" property="regDate"/>
+	</resultMap>
+
+	<!-- 전체글 조회 -->
+	<select id="selectAll" resultType="Board">
+		SELECT id, content, writer, title, view_cnt as viewCnt, date_format(reg_date, '%Y-%M-%d') as regDate 
+		FROM board;
+	</select>
+
+	<!-- 상세글 조회 -->
+	<select id="selectOne" resultMap="boardMap" parameterType="int">
+		SELECT *
+		FROM board
+		WHERE id = #{id};
+	</select>
+
+	<!-- 게시글 등록(서8 박정훈) -->
+	<insert id="insertBoard" parameterType="Board" keyProperty="id" useGeneratedKeys="true">
+		INSERT INTO board (id, title, writer, content)
+		VALUES (#{id}, #{title}, #{writer}, #{content})
+	</insert>
+	
+	<!-- 게시글 삭제 -->
+	<delete id="deleteBoard" parameterType="int">
+		DELETE FROM board
+		WHERE id = #{id}
+	</delete>
+	
+	<!-- 조회수 증가 -->
+	<update id="updateViewCnt" parameterType="int">
+		UPDATE board
+		SET view_cnt = view_cnt+1
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 게시글 수정 -->
+	<!-- 컬럼이 등록 날짜만 관리를 하고 있다. -->
+	<!-- 등록날짜 / 최근 조회날짜 / 수정 날짜 .... -->
+	<update id="updateBoard" parameterType="board">
+		UPDATE board
+		SET title = #{title}, content = #{content}, reg_date = now()
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 검색기능  -->
+	<select id="search" resultType="Board" parameterType="SearchCondition">
+		SELECT id, content, writer, title, view_cnt as viewCnt, date_format(reg_date, '%Y-%M-%d') as regDate
+		FROM board
+		<!-- 검색 조건 (동적쿼리)-->
+		<if test="key != 'none'">
+			WHERE ${key} LIKE concat('%', #{word}, '%')
+		</if>
+		<!-- 어떤 기준으로 어떤 방향으로 정렬 -->
+		<if test="orderBy != 'none'">
+			ORDER BY ${orderBy} ${orderByDir}
+		</if>
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+
+
+</mapper>

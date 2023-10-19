@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.board.model.dao.UserDao">
+	<!-- 커리큘럼 이름을 가지고 오려면 조인이 필요하다 -->
+	<select id="selectAll" resultType="User">
+		SELECT id, password, u.name AS name,
+			   curriculum_code AS curriculumCode,
+			   c.name AS curriculumName
+		FROM users u, curriculum c
+		WHERE curriculum_code = code
+	</select>
+
+	<insert id="insertUser" parameterType="User">
+		INSERT INTO users
+		VALUES(#{id}, #{password}, #{name}, #{curriculumCode})
+	</insert>
+ 
+ 	<select id="selectOne" parameterType="String" resultType="User">
+ 		SELECT id, password, name
+ 		FROM users
+ 		WHERE id = #{id}
+ 	</select>
+ 
+</mapper>
