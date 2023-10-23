@@ -8,7 +8,8 @@ public class SearchCondition {
 	
 	//기본 생성자습관
 	public SearchCondition() {
-		// TODO Auto-generated constructor stub
+		this.key = "none";
+		this.orderBy = "none";
 	}
 	
 	public String getKey() {
